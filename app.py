@@ -1001,7 +1001,7 @@ if 'podcast_script' in st.session_state:
 
 #################################################### Partage sur YOUTUBE
 
-from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
+# from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
 
 # def generate_final_video(audio_file_path, image_path, output_video_path):
 #     # Charger l'audio
