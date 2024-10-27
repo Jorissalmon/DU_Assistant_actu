@@ -1,0 +1,158 @@
+Voice: masculine
+Text: 
+        Salut, et bienvenue dans ton podcast 24 heures Actu présentant les actualités des dernières 24 heures à partir du dimanche 27 octobre 2024 à 20 heures 06 !
+        
+
+Voice: feminine
+Text: 
+        Installes toi confortablement et prépare toi à tout connaitre des infos récentes du moment !
+        
+
+Voice: masculine
+Text: Allons-y, parlons des actus Politique !
+
+Voice: feminine
+Text: Révision des règles des arrêts-maladies dans la fonction publique en 2025 : délai de carence, remboursement... 💼👩‍💼. Le gouvernement examinera le volet "dépenses" du projet de loi de finances 2025, notamment les règles des arrêts-maladies dans la fonction publique. Certains changements comme un délai de carence et une procédure de remboursement sont envisagés.
+
+Voice: masculine
+Text: Salomé Zourabichvili, présidente de la Géorgie, dénonce une "falsification totale" des élections législatives et appelle à manifester lundi 💥. La présidente de Géorgie, Salomé Zourabichvili, dénonce une "falsification totale" des élections législatives remportées par la formation Rêve géorgien. Elle appelle à manifester contre les irrégularités et les accusations de dérive autoritaire et de rapprochement avec la Russie du parti vainqueur.
+
+Voice: feminine
+Text: VidéoColère des agriculteurs : la présidente de l'Assemblée nationale exprime des regrets concernant le report du projet de loi à début 2025 😔. Yaël Braun-Pivet, présidente de l'Assemblée nationale, souligne l'urgence d'agir face aux manifestations annoncées par les agriculteurs. Elle exprime des regrets quant au report du projet de loi à début 2025.
+
+Voice: masculine
+Text: Le parti conservateur au pouvoir perd sa majorité lors des élections législatives au Japon, une première depuis 2009 🗳️. Le Parti libéral-démocrate au pouvoir au Japon a perdu sa majorité lors des élections législatives, ce qui est un événement rare dans l'histoire du parti. Cela soulève des enjeux importants pour l'avenir politique du pays.
+
+Voice: feminine
+Text: Quelles étapes suivront l'examen du budget 2025 à l'Assemblée nationale pour le projet de loi de finances ? 🏛️. Les députés n'ont pas pu terminer l'examen de tous les amendements liés aux recettes du budget 2025. Une nouvelle séance est prévue à l'Assemblée nationale le 5 novembre pour poursuivre les discussions. Cela aura un impact sur l'adoption du projet de loi de finances.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Technologie !
+
+Voice: feminine
+Text: Dans les coulisses du piratage télé sur internet : enquête franceinfoIPTV sur le blanchiment d'argent et les réseaux organisés 🕵️‍♂️. Le piratage massif des services TV illégaux génère beaucoup d'argent pour les pirates. Ce phénomène pose des défis aux autorités et aux diffuseurs.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Environnement !
+
+Voice: feminine
+Text: Bloqués au Muy dans le Var : plus de 500 personnes coincées après l'effondrement d'un pont 🌧️. Plus de 500 personnes sont bloquées au Muy, dans le Var, après l'effondrement d'un pont à cause des intempéries. La seule route menant au domaine privé est coupée, laissant les habitants prisonniers de la situation. Les autorités cherchent des solutions pour leur venir en aide.
+
+Voice: masculine
+Text: Le Var n'est plus en alerte orange suite aux fortes intempéries dans le Sud ⛈️. - Fortes intempéries dans le Var avec 340 interventions des pompiers depuis vendredi soir
+- Dégâts causés par les pluies importantes
+- Levée de l'alerte orange dans le département
+- L'épisode de mauvais temps a touché le Sud de la France
+
+Voice: feminine
+Text: Inondations dans le Var : De nombreuses communes submergées par les eaux 💦. De fortes pluies ont provoqué des inondations dans le Var et les Alpes-Maritimes. Plusieurs communes ont été gravement touchées, laissant des habitants les pieds dans l'eau au réveil.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Santé !
+
+Voice: feminine
+Text: Opinions partagées parmi les médecins concernant l'utilisation d'ordonnances sécurisées pour le Tramadol et les médicaments à base de codéine 💊. L'ordonnance pour le Tramadol et les médicaments à base de codéine doit désormais être renouvelée tous les trois mois, ce qui divise les médecins. Certains craignent que cette mesure chronophage ne pénalise les patients et les professionnels de santé.
+
+Voice: masculine
+Text: Allons-y, parlons des actus International !
+
+Voice: feminine
+Text: Principaux événements de la journée du dimanche 27 octobre au Proche-Orient 🌍. Le président égyptien propose une trêve de deux jours à Gaza avec un échange d'otages contre des prisonniers. Cette initiative vise à apaiser les tensions dans la région en pleine escalade de violence.
+
+Voice: masculine
+Text: Des soldats russes accusés de tirer sur des civils dans une ville du front de Donetsk en Ukraine 💥. - Enquête ouverte après la diffusion d'une vidéo montrant deux soldats venant en aide à des passagers d'un véhicule civil.
+- L'Ukraine accuse des soldats russes d'avoir tiré sur des civils dans la région de Donetsk.
+- Des tensions persistantes entre l'Ukraine et la Russie dans la région du front.
+
+Voice: feminine
+Text: L'Arabie saoudite ouvre une nouvelle île de luxe dans sa ville futuriste de Neom 🏝. L'Arabie saoudite construit Neom, une mégalopole futuriste visant à attirer les touristes fortunés. Une île de luxe a récemment été inaugurée pour débuter ce vaste projet.
+
+Voice: masculine
+Text: L'ancien président Evo Morales affirme avoir échappé à une tentative d'attentat en Bolivie, avec 14 tirs contre son véhicule 🔫. - Les partisans d'Evo Morales ont organisé des blocages routiers à Cochabamba pour demander l'arrêt des poursuites judiciaires contre lui.
+- Evo Morales est visé par une enquête pour viol, trafic et traite d'êtres humains.
+- L'ancien président Evo Morales affirme avoir échappé à un attentat avec 14 tirs contre son véhicule en Bolivie.
+
+Voice: feminine
+Text: • Proposition de trêve de deux jours à Gaza par le président égyptien pour l'échange de quatre otages israéliens contre des prisonniers palestiniens 🕊️. Le président égyptien propose une trêve de deux jours à Gaza pour échanger quatre otages israéliens contre des prisonniers palestiniens, afin d'ouvrir des négociations en vue d'un cessez-le-feu complet.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Justice !
+
+Voice: feminine
+Text: Le garde des Sceaux Didier Migaud prêt à inclure le consentement dans la définition pénale du viol en France 🇫🇷. Le ministre de la Justice est favorable à une rédaction de la loi pour inscrire la notion de consentement dans le droit français.
+
+Voice: masculine
+Text: Un compte frauduleux sur X et Instagram se fait passer pour Gisèle Pelicot lors du procès des viols de Mazan 🕵️‍♂️. - Des publications suspectes ont été signalées sur le compte de Gisèle Pelicot sur X et Instagram
+- Un faux compte se faisant passer pour Gisèle Pelicot a été identifié
+- Ce faux compte a été utilisé pour diffuser des informations trompeuses sur le procès des viols de Mazan
+
+Voice: feminine
+Text: Maintenant, découvrons ensemble ce qui se passe dans les actus Société !
+
+Voice: masculine
+Text: Le déclin démographique persiste en Italie : baisse des naissances et population vieillissante 👶👵. La natalité en Italie est en baisse avec une population vieillissante. Les chiffres publiés pour 2023 confirment cette tendance. L'Italie est confrontée à un hiver démographique persistant.
+
+Voice: feminine
+Text: Reportage : En Arizona, la lutte pour le droit à l'avortement s'intensifie pendant l'élection présidentielle américaine ⚖️. Le 5 novembre, les électeurs de l'Arizona vont voter sur la proposition 139 qui pourrait assouplir le droit à l'avortement et le protéger constitutionnellement pour les femmes de l'Etat. Cette mesure est au cœur de la bataille pour le droit à l'avortement dans un contexte d'élection présidentielle américaine.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Culture !
+
+Voice: feminine
+Text: "Ernest Pignon-Ernest, pionnier du street-art, se confie : Après Picasso, j'ai ressenti une barrière dans la peinture" 😮. Ernest Pignon-Ernest, célèbre artiste du street-art, est connu pour ses dessins emblématiques dans plusieurs villes du monde. Dans un livre de Pascal Bonafoux, il se confie sur son parcours artistique. Il explique avoir été inspiré par Picasso et avoir ressenti un besoin de s'exprimer dans l'espace public après lui. Son art est reconnu pour son engagement politique et social, et sa capacité à transformer les espaces urbains en lieux de réflexion et de questionnement.
+
+Voice: masculine
+Text: Reda Kateb passe derrière la caméra pour célébrer l'art du clown 🎥. Le comédien Reda Kateb réalise son premier long-métrage où il nous plonge dans l'univers des enfants malades à l'hôpital, avec le personnage de Zouzou, incarnée par Aloïse Sauvage. Ce film, "Sur un fil", rend hommage à la figure du clown de manière sensible et touchante.
+
+Voice: feminine
+Text: Le déclin de Gérard Depardieu : des premières accusations à son procès pour agressions sexuelles 🌅. Gérard Depardieu sera jugé à partir de lundi pour des agressions sexuelles pendant le tournage d'un film. L'acteur est désormais isolé et perd ses soutiens. C'est le crépuscule d'un grand acteur, depuis les premières accusations jusqu'à son procès.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Sport !
+
+Voice: feminine
+Text: • La bataille continue entre Max Verstappen et Lando Norris à DirectF1 : Ne manquez pas le Grand Prix du Mexique! 🏁. La 20e manche de la saison de Formule 1 présente un duel entre Max Verstappen et Lando Norris. Le Grand Prix du Mexique promet d'être intense et plein de suspense.
+
+Voice: masculine
+Text: • DirectOM-PSG : Les Parisiens seront-ils capables de faire face à la pression de l'OM ? Ne manquez pas le choc de la 9e journée de Ligue 1 à partir de 20h45! ⚽. L'article parle de la possibilité pour l'Olympique de Marseille de rejoindre le Paris Saint-Germain en tête du classement en cas de victoire au Vélodrome. Le match entre les deux équipes est un choc de la 9e journée de Ligue 1 et suscite beaucoup d'attente. Les supporters se demandent si le PSG pourra résister à la pression marseillaise.
+
+Voice: feminine
+Text: Félix Lebrun remporte une victoire historique au WTT Champions de Montpellier 🏓. Félix Lebrun a remporté le tournoi international de tennis de table WTT Champions de Montpellier, devenant ainsi le premier joueur français à réaliser cet exploit.
+
+Voice: masculine
+Text: Giovanni Mpetshi Perricard remporte son premier titre en ATP 500 à Bâle 🏆. - Giovanni Mpetshi Perricard, un Français de 23 ans, a remporté son premier titre en carrière en ATP 500 à Bâle, en Suisse.
+- C'est une victoire importante pour le joueur qui a battu des adversaires de haut niveau pour décrocher ce titre.
+- Ce résultat témoigne du talent et du potentiel de Giovanni Mpetshi Perricard dans le monde du tennis professionnel.
+
+Voice: feminine
+Text: Le Real Madrid condamne fermement les insultes racistes envers les Barcelonais Lamine Yamal et Alejandro Baldé lors du Clasico de la Liga ⚽️. Le Real Madrid a subi une défaite de 4-0 à domicile contre le FC Barcelone. Le club a condamné les insultes racistes envers les joueurs adverses Lamine Yamal et Alejandro Baldé lors du match.
+
+Voice: masculine
+Text: Allons-y, parlons des actus Faits divers !
+
+Voice: feminine
+Text: Des plongeurs français naufragés en mer Rouge attendent des secours pendant des heures 🌊🚢. - 18 Français originaires de la Mayenne ont failli perdre la vie lors du naufrage de leur bateau en mer Rouge.
+- Partis pour une croisière de plongée en Egypte, ils ont dû attendre plusieurs heures avant d'être secourus.
+- La situation aurait pu tourner au drame sans l'intervention des secours.
+- Les plongeurs ont finalement été sauvés et sont sains et saufs.
+
+Voice: masculine
+Text: Enlèvement de Santiago : l'état de santé du nouveau-né selon les procès-verbaux de la police au moment de l'alerte 💔. France Télévisions a consulté des procès-verbaux de police concernant la santé du nouveau-né hospitalisé à Aulnay-sous-Bois, mettant en avant les soins nécessaires pour sa survie. Les estimations sur la durée de vie de l'enfant en l'absence de soins divergent fortement en moins de 48 heures.
+
+Voice: feminine
+Text: Un enfant de 5 ans gravement blessé par balle à la tête lors d'une course poursuite près de Rennes, son pronostic vital en danger 😥. Un enfant de 5 ans a été blessé par balle à la tête lors d'une course poursuite près de Rennes, en Ille-et-Vilaine.
+         Son pronostic vital est engagé et l'incident s'est déroulé au niveau d'un rond-point de Pacé.
+         Les circonstances exactes de l'incident restent encore floues et une enquête est en cours pour déterminer les responsabilités.
+
+Voice: feminine
+Text: 
+        Et voilà, c'est la fin de notre épisode sur les actus des dernières 24 heures.
+        Merci à toi d'avoir écouter cette épisode, retrouves ces actualités dans un formats newsletter sur notre site
+        
+
+Voice: masculine
+Text: 
+        N'oublies pas de revenir demain pour encore plus d'actu.
+        Prends soin de toi et à demain !
+        
+

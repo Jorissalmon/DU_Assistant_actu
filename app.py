@@ -83,8 +83,7 @@ class Article:
         self.summary = summary
         self.metadata = {
             "title": self.title,
-            "published": self.published.isoformat(),
-            "title_propre": self.title_propre  # Inclure title_propre dans metadata
+            "published": self.published.isoformat()
         }  
 
     def __str__(self):
@@ -152,12 +151,14 @@ def load_processed_articles():
                 # Convertir les dictionnaires en objets Article
                 articles = [
                     Article(
-                        title=article['title'],
-                        link=article['link'],
-                        content=article['content'],
-                        chapo=article['chapo'],
-                        published=article['published'],
-                        summary=article.get('summary')
+                        title=article['title'], 
+                        link=article['link'], 
+                        chapo=article['chapo'], 
+                        content=article['content'], 
+                        published=article['published'], 
+                        summary=article['summary'], 
+                        category=article['category'],
+                        title_propre=article['title_propre']
                     )
                     for article in articles_data
                 ]
@@ -383,7 +384,7 @@ def classify_article_titles_with_gpt(articles_titres):
         "Voici une liste de titres d'articles d'actualité. "
         "Votre tâche est de classer chacun de ces titres dans une catégorie appropriée. Vous devez tous les classer"
         "Supprime les Titre introuvable"
-        "Les catégories incluent : 'Politique', 'Technologie', 'International', 'Économie', 'Culture', 'Environnement', 'Santé', 'Sport', 'Justice', 'Faits divers', 'Autres actus', et 'Sociétés'."
+        "Les catégories incluent : 'Politique', 'Technologie', 'International', 'Économie', 'Culture', 'Environnement', 'Santé', 'Sport', 'Justice', 'Faits divers', 'Autres actus', et 'Société'."
         "Pour chaque titre, indiquez la catégorie correspondante en utilisant le format 'Titre | Catégorie'. "
         "Voici des exemples de titres pour référence :\n"
         "- Titre : Apologie du terrorisme : des plaques de rues recouvertes de noms de leaders du Hamas à Poitiers | Politique\n"
@@ -499,12 +500,13 @@ if st.button("Charger l'actualité des dernières 24 heures"):
 
     # Stocker la date et l'heure de récupération dans la session
     retrieval_time = datetime.now(timezone.utc)
-    st.session_state.retrieval_time = retrieval_time.strftime("%A %d %B %Y à %H:%M")
-
+    st.session_state.retrieval_time_format1 = retrieval_time.strftime("%A %d %B %Y à %H:%M")
+    st.session_state.retrieval_time_format2 = retrieval_time.strftime("%A %d %B %Y à %H heures %M")
+    st.session_state.retrieval_time_format3 = retrieval_time.strftime("%A_%d_%B_%Y")
 
 # Afficher la date et l'heure de récupération à côté du bouton
 if 'retrieval_time' in st.session_state:
-    st.write(f"Données récupérées le : **{st.session_state.retrieval_time}**")
+    st.write(f"Données récupérées le : **{st.session_state.retrieval_time_format1}**")
 
 ###################################
 #########APPLICATION###############
@@ -651,7 +653,7 @@ def generate_html_content(grouped_articles_by_topics):
     </head>
     <body>
         <h1>📰 Newsletter<br>
-        <em style="font-size: 0.6em;">{st.session_state.retrieval_time}</em></h1>
+        <em style="font-size: 0.6em;">{st.session_state.retrieval_time_format1}</em></h1>
     """
 
     # Couleurs associées aux catégories (version plus sombre)
@@ -695,26 +697,24 @@ def generate_html_content(grouped_articles_by_topics):
     for category in ordered_categories:
         articles = grouped_articles_by_topics[category]
 
-        # Si la catégorie contient des articles
-        if len(articles)>0:
-            # Obtenir la couleur de fond et du texte pour la catégorie
-            article_background_color = category_colors.get(category, "#808080")
-            category_text_color = category_colors.get(category, "#000000")  # Texte en noir si non défini
+        # Obtenir la couleur de fond et du texte pour la catégorie
+        article_background_color = category_colors.get(category, "#808080")
+        category_text_color = category_colors.get(category, "#000000")  # Texte en noir si non défini
 
-            # Ajouter le titre de la catégorie avec sa couleur
-            html_content += f"<h2 class='category-title' style='color: {category_text_color};'>{category}</h2><ul>"
+        # Ajouter le titre de la catégorie avec sa couleur
+        html_content += f"<h2 class='category-title' style='color: {category_text_color};'>{category}</h2><ul>"
 
-            # Ajouter chaque article de la catégorie
-            for article in articles:
-                if article.title != "":
-                    html_content += f"""
-                    <li style='background-color: rgba({hex_to_rgba(category_colors[category], 0.85)});'>
-                        <strong><em>{article.title_propre}</em></strong><br><br>
-                        {article.summary}
-                    </li>
-                    """
+        # Ajouter chaque article de la catégorie
+        for article in articles:
+            if article.title != "":
+                html_content += f"""
+                <li style='background-color: rgba({hex_to_rgba(category_colors[category], 0.85)});'>
+                    <strong><em>{article.title_propre}</em></strong><br><br>
+                    {article.summary}
+                </li>
+                """
 
-            html_content += "</ul>"
+        html_content += "</ul>"
 
     html_content += """
         </body>
@@ -722,9 +722,9 @@ def generate_html_content(grouped_articles_by_topics):
     """
 
     st.session_state.newsletter=html_content
-
+    chemin="Tests_newsletter/24hActus_Newsletter_"+st.session_state.retrieval_time_format3+".html"
     # Enregistrer la newsletter dans un fichier HTML
-    with open("newsletter.html", "w", encoding="utf-8") as file:
+    with open(chemin, "w", encoding="utf-8") as file:
         file.write(html_content)
     return html_content
 
@@ -736,21 +736,18 @@ with col1:
         # Générer le contenu HTML de la newsletter
         html_content_generation = generate_html_content(st.session_state.grouped_articles_by_topics)
 
-        # Bouton de téléchargement de la newsletter
-        if 'newsletter' in st.session_state:
-            st.sidebar.download_button(
-                label="Télécharger la Newsletter du jour",
-                data=html_content_generation,
-                file_name="Newsletter_du_" + st.session_state.retrieval_time + ".html", 
-                mime="text/html"
-            )
+# Bouton de téléchargement de la newsletter
+if 'newsletter' in st.session_state:
+    st.sidebar.download_button(
+        label="Télécharger la Newsletter du jour",
+        data=    st.session_state.newsletter,
+        file_name="Newsletter_du_" + st.session_state.retrieval_time_format3 + ".html", 
+        mime="text/html"
+    )
 
 if 'newsletter' in st.session_state:
-    # Lire le contenu du fichier HTML
-    with open("newsletter.html", "r", encoding="utf-8") as file:
-        newsletter_html = file.read()
     # Afficher la newsletter dans Streamlit
-    components.html(newsletter_html, height=800, width=800, scrolling=True)
+    components.html(st.session_state.newsletter, height=800, width=800, scrolling=True)
 
 ###################################
 #########APPLICATION###############
@@ -758,19 +755,23 @@ if 'newsletter' in st.session_state:
 ###################################
 import os
 from pydub import AudioSegment
+from pydub.effects import speedup
+from scipy.signal import resample
+
 # Créer un dossier pour stocker les fichiers audio individuels
 def create_speech_directory():
     if not os.path.exists("speech"):
         os.makedirs("speech")
 
+# Génère le script du podcast avec les différents intervenants
 def generate_podcast_script(articles_by_category):
     podcast_script = []
-    
+
     # Introduction
     podcast_script.append({
         "voice": "masculine", 
         "text": f"""
-        Salut, et bienvenue dans ton podcast 24 heures Actu présentant les actualités des dernières 24 heures à partir du {st.session_state.retrieval_time} !
+        Salut, et bienvenue dans ton podcast 24 heures Actu présentant les actualités des dernières 24 heures à partir du {st.session_state.retrieval_time_format2} !
         """
     })
     
@@ -781,10 +782,30 @@ def generate_podcast_script(articles_by_category):
         """
     })
     
+    # Ordre de priorité des catégories par importance
+    priority_order = [
+        "Politique",
+        "Économie",
+        "Technologie",
+        "Environnement",
+        "Santé",
+        "International",
+        "Justice",
+        "Société",
+        "Culture",
+        "Sport",
+        "Faits divers",
+        "Autres actus"
+    ]
+
+    # Filtrer les catégories selon l'ordre de priorité défini et ne garder que celles qui contiennent des articles
+    ordered_categories = [category for category in priority_order if category in articles_by_category and articles_by_category[category]]
+
+
     # Alterner entre les catégories et les articles
     alternating_voice = "masculine"  # Commencer par la voix masculine
 
-    for category, articles in articles_by_category.items():
+    for category in ordered_categories:
         if category!="Autres actus":
             # Présenter chaque catégorie
             if alternating_voice == "masculine":
@@ -801,17 +822,17 @@ def generate_podcast_script(articles_by_category):
                 alternating_voice = "masculine"
 
             # Ajouter les articles
-            for article in articles:
+            for article in articles_by_category[category]:
                 if alternating_voice == "masculine":
                     podcast_script.append({
                         "voice": "masculine",
-                        "text": f"{article.title}. {article.summary}"
+                        "text": f"{article.title_propre}. {article.summary}"
                     })
                     alternating_voice = "feminine"
                 else:
                     podcast_script.append({
                         "voice": "feminine",
-                        "text": f"{article.title}. {article.summary}"
+                        "text": f"{article.title_propre}. {article.summary}"
                     })
                     alternating_voice = "masculine"
 
@@ -827,13 +848,14 @@ def generate_podcast_script(articles_by_category):
     podcast_script.append({
         "voice": "masculine",
         "text": """
-        N'oublies pas de revenir demain pour encore plus d'actus.
+        N'oublies pas de revenir demain pour encore plus d'actu.
         Prends soin de toi et à demain !
         """
     })
     
     return podcast_script
 
+# Requete à l'API OpenAI pour les voix
 def text_to_mp3_Openai(text, voice, output_path="audio.mp3"):
     # Utilisation de l'API OpenAI pour la synthèse vocale
     client = st.session_state.client
@@ -846,23 +868,102 @@ def text_to_mp3_Openai(text, voice, output_path="audio.mp3"):
     return output_path
 
 # Fonction pour générer le podcast entier
-def generate_podcast_audio(podcast_script):
+def generate_podcast_audio_files(podcast_script):
     create_speech_directory()  # Créer le dossier speech s'il n'existe pas
-    combined_audio = AudioSegment.silent(duration=1000)  # Commencer avec 1s de silence
     
     for i, segment in enumerate(podcast_script):
-        voice = "echo" if segment["voice"] == "masculine" else "shimmer"  # Choisir la voix masculine/féminine
-        output_path = f"speech/segment_{i+1}.mp3"  # Nom du fichier pour chaque segment
+        voice_type = "echo" if segment["voice"] == "masculine" else "shimmer"  # Sélectionner la voix
+        output_path = f"speech/segment_{i+1}.mp3"  # Sauvegarde de chaque segment
+
+        # Générer chaque segment audio à partir du texte (via OpenAI ou un autre service)
+        text_to_mp3_Openai(segment["text"], voice_type, output_path)
+    
+    return "Tous les fichiers audio ont été générés."
+
+# Modification des voix
+def change_voice_pitch(audio_segment, semitone_change):
+    # Convertir le fichier AudioSegment en numpy array
+    samples = np.array(audio_segment.get_array_of_samples())
+    
+    # Taux d'échantillonnage
+    sample_rate = audio_segment.frame_rate
+    
+    # Calculer le facteur de changement de fréquence
+    pitch_factor = 2 ** (semitone_change / 12.0)
+    
+    # Modifier le pitch en changeant la fréquence d'échantillonnage
+    new_sample_rate = int(sample_rate * pitch_factor)
+    
+    # Resampling pour changer le pitch
+    shifted_samples = resample(samples, int(len(samples) * (new_sample_rate / sample_rate)))
+    
+    # Convertir les samples retournés en AudioSegment
+    return audio_segment._spawn(shifted_samples.astype(audio_segment.array_type).tobytes())
+
+#Ajoutes les effets 
+def generate_podcast_audio_with_music(podcast_script, background_music_path):
+    # Créer le dossier speech s'il n'existe pas
+    create_speech_directory()
+
+    combined_audio = AudioSegment.silent(duration=500)  # 1 seconde de silence au début
+    
+    # Charger la musique de fond
+    background_music = AudioSegment.from_file(background_music_path)
+    
+    # Variables pour ajuster les voix et la musique
+    voice_volume = +10  # Augmenter un peu le volume de la voix
+    music_volume = -10  # Baisser le volume de la musique de fond pour ne pas dominer la voix
+    intro_duration = 15000  # Durée de la musique d'intro en millisecondes (15 secondes)
+    outro_duration = 15000  # Durée de la musique d'outro en millisecondes (15 secondes)
+
+    for i, segment in enumerate(podcast_script):
+        voice_type = "echo" if segment["voice"] == "masculine" else "shimmer"  # Sélectionner la voix
+        output_path = f"speech/segment_{i+1}.mp3"  # Chemin du fichier MP3
+
+        # Charger le segment audio généré
+        voice_audio = AudioSegment.from_mp3(output_path)
+        voice_audio = voice_audio + voice_volume  # Ajuster le volume de la voix
         
-        # Générer et sauvegarder chaque segment audio
-        text_to_mp3_Openai(segment["text"], voice, output_path)
-        
-        # Charger l'audio généré et le combiner
-        audio_segment = AudioSegment.from_mp3(output_path)
-        combined_audio += audio_segment  # Ajouter chaque segment d'audio
+        # Ajuster la hauteur de la voix
+        # if voice_type == "echo":  # Voix masculine
+        #     voice_audio = change_voice_pitch(voice_audio, semitone_change=-0.5)  # Plus grave
+        # elif voice_type == "shimmer":  # Voix féminine
+        #     voice_audio = change_voice_pitch(voice_audio, semitone_change=0.5)  # Plus aiguë
+
+        # Accélérer la voix de 1.25x
+        voice_audio = speedup(voice_audio, playback_speed=1.25)
+
+        # Ajouter musique à l'introduction
+        if i == 0:
+            background_music_intro = background_music[:intro_duration].fade_in(2000).fade_out(2000) + music_volume
+            combined_segment = background_music_intro.overlay(voice_audio)
+        # Ajouter musique à la conclusion dans les 15 dernières secondes
+        elif i == len(podcast_script) - 2:
+            # Avant-dernière voix: commence la musique de fond ici
+            outro_length = len(voice_audio)  # Longueur de l'avant-dernière voix
+            background_music_outro = background_music[:outro_length].fade_in(outro_length) + music_volume  # Prend la musique jusqu'à la longueur de la voix
+            combined_segment = voice_audio.overlay(background_music_outro)
+
+        elif i == len(podcast_script) - 1:
+            # Dernière voix: reprendre la musique après la voix
+            outro_voice_part = voice_audio  # Prendre la voix entière
+
+            # Reprendre la musique où elle s'est arrêtée dans l'avant-dernière voix
+            start_position = len(st.session_state.podcast_script[-2])  # Longueur de l'avant-dernière voix pour savoir où reprendre la musique
+            background_music_resume = background_music[9800:23000].fade_out(3000) + music_volume
+
+            # Combiner la dernière voix avec la musique de fond
+            combined_segment = background_music_resume.overlay(outro_voice_part)
+
+        else:
+            # Pas de musique pour les segments intermédiaires
+            combined_segment = voice_audio
+                
+        # Ajouter le segment combiné à l'audio final
+        combined_audio += combined_segment
 
     # Chemin du fichier de sortie pour l'audio combiné
-    combined_output_path = "speech/podcast_final.mp3"
+    combined_output_path = "speech/24hActus_podcast_"+st.session_state.retrieval_time_format3+".mp3"
     
     # Exporter l'audio combiné en un seul fichier MP3
     combined_audio.export(combined_output_path, format="mp3")
@@ -872,21 +973,58 @@ def generate_podcast_audio(podcast_script):
 with col2:
     # Générer le script du podcast
     if st.button("Générer le podcast"):
+         # Générer le podcast en prenant seulement les deux premières catégories
+        # limited_articles = dict(list(st.session_state.grouped_articles_by_topics.items())[:2])  # Prendre les deux premières catégories
         podcast_script = generate_podcast_script(st.session_state.grouped_articles_by_topics)
+
+        # Créer un fichier .txt pour sauvegarder le script
+        txt_file_path = "podcast_script.txt"
+
+        # Ouvrir le fichier en mode écriture et sauvegarder chaque segment
+        with open(txt_file_path, "w", encoding="utf-8") as file:
+            for segment in podcast_script:
+                file.write(f"Voice: {segment['voice']}\n")
+                file.write(f"Text: {segment['text']}\n")
+                file.write("\n")  # Ajouter une ligne vide entre chaque segment
+
+        # with open("podcast_script.txt", "r", encoding="utf-8") as file:
+        #     podcast_script_content = file.read()  # Lire tout le contenu du fichier
+
         st.session_state.podcast_script=podcast_script
 
-        if st.sidebar.button("Générer le podcast audio"):
-            # Générer l'audio
-            podcast_audio = generate_podcast_audio(podcast_script)
-            # Proposer le téléchargement du podcast
-            st.sidebar.download_button(
-                label="Télécharger le podcast en MP3",
-                data=podcast_audio,
-                file_name="podcast.mp3",
-                mime="audio/mpeg"
-            )
+        # Générer les fichiers audio individuels
+        # generate_podcast_audio_files(st.session_state.podcast_script)
+
+        # Ajouter la musique et les effets au podcast
+        podcast_audio = generate_podcast_audio_with_music(podcast_script, "music.mp3")
+        st.session_state.podcast_audio=podcast_audio
+        st.sidebar.audio(podcast_audio)
+
+if 'podcast_audio' in st.session_state:
+    # Proposer le téléchargement du podcast
+    file_name="24hActus_Podcast" + st.session_state.retrieval_time_format3 + ".mp3"
+    st.sidebar.download_button(
+        label="Télécharger le podcast en MP3",
+        data=st.session_state.podcast_audio,
+        file_name=file_name,
+        mime="audio/mpeg"
+    )
+
 if 'podcast_script' in st.session_state:
     st.write(st.session_state.podcast_script)
+
+#################################################### Partage sur YOUTUBE
+
+# from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
+
+
+
+# # Exemple d'utilisation
+# audio_file_path = './speech/podcast.mp3'  # Chemin vers le fichier audio
+# image_path = './assets/thumbnail.jpg'  # Chemin vers une image à utiliser comme fond
+# output_video_path = './/podcast_video.mp4'  # Chemin pour le fichier vidéo final
+
+# generate_final_video(audio_file_path, image_path, output_video_path)
 
 ###################################
 #########APPLICATION###############
@@ -993,36 +1131,3 @@ if 'podcast_script' in st.session_state:
 #             st.error("L'adresse e-mail est invalide. Veuillez entrer une adresse e-mail valide.")
 #     else:
 #         st.warning("Veuillez entrer une adresse e-mail.")
-
-
-
-#################################################### Partage sur YOUTUBE
-
-# from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
-
-# def generate_final_video(audio_file_path, image_path, output_video_path):
-#     # Charger l'audio
-#     audio_clip = AudioFileClip(audio_file_path)
-    
-#     # Charger une image comme fond
-#     image_clip = ImageClip(image_path)
-#     image_clip = image_clip.set_duration(audio_clip.duration)
-#     image_clip = image_clip.set_fps(24)  # 24 images par seconde pour la vidéo
-
-#     # Créer un clip vidéo composite
-#     video_clip = CompositeVideoClip([image_clip.set_audio(audio_clip)])
-
-#     # Écrire la vidéo dans le fichier
-#     video_clip.write_videofile(output_video_path, codec='libx264', audio_codec='aac')
-
-#     # Libérer les ressources
-#     audio_clip.close()
-#     image_clip.close()
-#     video_clip.close()
-
-# # Exemple d'utilisation
-# audio_file_path = './speech/podcast.mp3'  # Chemin vers le fichier audio
-# image_path = './assets/thumbnail.jpg'  # Chemin vers une image à utiliser comme fond
-# output_video_path = './/podcast_video.mp4'  # Chemin pour le fichier vidéo final
-
-# generate_final_video(audio_file_path, image_path, output_video_path)

@@ -9,3 +9,4 @@ langchain-community
 tiktoken
 fuzzywuzzy
 pydub
+scipy
