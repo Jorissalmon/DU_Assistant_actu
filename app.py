@@ -337,7 +337,7 @@ def articles_adds(articles):
 
             # Générer un résumé pour l'article
         
-            summary_content, reformulated_title = generate_summary(article_obj.content, title=article_obj.title)
+            summary_content, reformulated_title = generate_summary(article_obj.content, article_obj.title)
             article_obj.summary = summary_content
 
             # Stocker le titre reformulé dans l'objet Article
@@ -549,7 +549,7 @@ def query_faiss(vectordb, query_text):
 
     return response.choices[0].message.content
 
-st.sidebar.write("💬 Vous pouvez également poser une question sur l'actualité !")
+st.sidebar.write("💬 **Vous pouvez également poser une question sur l'actualité !**")
 search_query = st.sidebar.text_input("Rechercher dans les actualités :")
 # Bouton de recherche
 if st.sidebar.button("Rechercher"):
@@ -571,8 +571,6 @@ import streamlit.components.v1 as components
 
 # Fonction pour générer le contenu HTML
 def generate_html_content(grouped_articles_by_topics):
-    # Créer une structure HTML pour la newsletter
-    current_date = datetime.now()
 
     # Fonction pour convertir une image en base64
     def image_to_base64(image_path):
@@ -669,7 +667,8 @@ def generate_html_content(grouped_articles_by_topics):
         "Justice": "#E6C94A",         # Jaune sombre
         "Faits divers": "#E17677",    # Rouge clair sombre
         "Société": "#BFA0C5",         # Violet doux sombre
-        "Divers": "#545B5D"           # Gris sombre
+        "Divers": "#545B5D",          # Gris sombre
+        "Autres actus": "#000000"
     }
 
     # Ordre de priorité des catégories par importance
