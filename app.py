@@ -571,8 +571,6 @@ import streamlit.components.v1 as components
 
 # Fonction pour générer le contenu HTML
 def generate_html_content(grouped_articles_by_topics):
-    locale.setlocale(locale.LC_TIME, 'fr_FR')  # Pour les systèmes UNIX, sinon essayer 'fr_FR' sur Windows
-
     # Créer une structure HTML pour la newsletter
     current_date = datetime.now()
 
