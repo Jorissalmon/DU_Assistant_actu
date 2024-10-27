@@ -1,3 +1,5 @@
 env/
 .streamlit/
 faiss_index/
+speech/
+Tests_newsletter/

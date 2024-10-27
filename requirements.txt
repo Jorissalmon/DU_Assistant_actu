@@ -7,3 +7,5 @@ openai
 langchain
 langchain-community
 tiktoken
+fuzzywuzzy
+pydub
