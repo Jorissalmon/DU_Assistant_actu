@@ -558,7 +558,7 @@ if st.sidebar.button("Rechercher"):
         #     search_query = search_query.decode('utf-8')
         results = query_faiss(st.session_state['vectordb'], search_query)
         if results:
-            st.write(results)
+            st.sidebar.write(results)
     else:
         st.warning("Veuillez entrer une requête de recherche.")
 
