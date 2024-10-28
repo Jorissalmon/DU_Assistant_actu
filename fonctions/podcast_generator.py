@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 import numpy as np
 from pydub import AudioSegment
 from pydub.effects import speedup
