@@ -2,9 +2,22 @@ import os
 import numpy as np
 from pydub import AudioSegment
 from pydub.effects import speedup
+from openai import OpenAI
 from scipy.signal import resample
 from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
 from fonctions.upload_youtube import upload_video
+
+###################################
+#########CONFIG OpenAI#############
+###################################
+OPENAI_API_KEY=st.secrets["OPENAI_API_KEY"]
+st.session_state.OPENAI_API_KEY=OPENAI_API_KEY
+client = OpenAI(
+api_key=OPENAI_API_KEY,
+)
+st.session_state.client = client
+# Configuration de l'API OpenAI
+openai.api_key = OPENAI_API_KEY
 
 # Créer un dossier pour stocker les fichiers audio individuels
 def create_speech_directory():
@@ -197,7 +210,7 @@ def generate_podcast_audio_with_music(podcast_script, background_music_path, ret
             outro_voice_part = voice_audio  # Prendre la voix entière
 
             # Reprendre la musique où elle s'est arrêtée dans l'avant-dernière voix
-            start_position = len(st.session_state.podcast_script[-2])  # Longueur de l'avant-dernière voix pour savoir où reprendre la musique
+            start_position = len(podcast_script[-2])  # Longueur de l'avant-dernière voix pour savoir où reprendre la musique
             background_music_resume = background_music[9800:23000].fade_out(3000) + music_volume
 
             # Combiner la dernière voix avec la musique de fond
