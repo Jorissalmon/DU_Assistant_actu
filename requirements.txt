@@ -8,6 +8,7 @@ langchain
 langchain-community
 tiktoken
 fuzzywuzzy
+tornado==6.4.1
 pydub
 scipy
 google-api-python-client==1.7.2
