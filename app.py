@@ -3,11 +3,9 @@ import feedparser
 import requests
 import os
 import json
-import locale
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta, timezone
 import openai
-import faiss
 import numpy as np
 from openai import OpenAI
 from typing import List
@@ -241,6 +239,7 @@ def get_article_content(link):
     article = Article(title, link, chapo, content, published_time, summary="")  # Ajout d'un résumé vide
     return article
 
+#Génère un résumé de l'article
 def generate_summary(article_content, title):
     client = st.session_state.client
     
@@ -505,7 +504,7 @@ if st.button("Charger l'actualité des dernières 24 heures"):
     st.session_state.retrieval_time_format3 = retrieval_time.strftime("%A_%d_%B_%Y")
 
 # Afficher la date et l'heure de récupération à côté du bouton
-if 'retrieval_time' in st.session_state:
+if 'retrieval_time1' in st.session_state:
     st.write(f"Données récupérées le : **{st.session_state.retrieval_time_format1}**")
 
 ###################################
@@ -570,177 +569,23 @@ if st.sidebar.button("Rechercher"):
 ###################################
 import base64
 import streamlit.components.v1 as components
-
-# Fonction pour générer le contenu HTML
-def generate_html_content(grouped_articles_by_topics):
-
-    # Fonction pour convertir une image en base64
-    def image_to_base64(image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
-
-    # Convertir l'image en base64
-    background_image_base64 = image_to_base64("background_newsletter.png")
-
-    def hex_to_rgba(hex_color, alpha=0.8):
-        hex_color = hex_color.lstrip("#")
-        r = int(hex_color[0:2], 16)
-        g = int(hex_color[2:4], 16)
-        b = int(hex_color[4:6], 16)
-        return f"{r}, {g}, {b}, {alpha}"
-
-    html_content = f"""
-    <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Newsletter</title>
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 20px;
-                background: #f4f4f4; /* Couleur de fond de la page */
-                background-attachment: fixed;
-                background-image: url(data:image/png;base64,{background_image_base64});
-                background-size: cover; /* Recouvrir tout l'écran */
-                backdrop-filter: blur(10px); /* Flou de l'arrière-plan */
-                color: #333;
-                text-align: center; /* Centrer le texte dans le corps */
-            }}
-            h1 {{
-                color: white;                               /* Couleur du texte en blanc */
-                font-weight: bold;                          /* Texte en gras */
-                background-color: rgba(0, 0, 0, 0.7);       /* Fond noir avec transparence */
-                padding: 20px;                              /* Espacement interne */
-                border-radius: 10px;                         /* Coins arrondis */
-                backdrop-filter: blur(10px);                /* Effet de flou sur l'arrière-plan */
-                border: 10px solid white;                    /* Bordure blanche autour du titre */
-                width: 100%;                                /* Prendre toute la largeur */
-                text-align: center;                         /* Centrer le texte */
-                margin: 0;                                  /* Supprimer les marges par défaut */
-                position: relative;                         /* Positionner correctement l'élément */
-                box-sizing: border-box;                     /* Inclure la bordure dans la largeur */
-            }}
-            .category-title {{
-                display: inline-block;
-                width: 200px;
-                padding: 10px 20px; /* Espacement autour du texte */
-                background-color: rgba(255, 255, 255, 1); /* Fond blanc transparent */
-                color: {{category_text_color}}; /* Couleur du texte selon la catégorie */
-                border-radius: 10px 10px 0 0;   /* Coins arrondis seulement en haut */
-                margin: 20px 0px;                 /* Espace au-dessus et au-dessous */
-                font-weight: bold;
-                text-align: center;               /* Aligner */
-            }}
-            ul {{
-                list-style-type: none;
-                backdrop-filter: blur(10px); /* Flou de l'arrière-plan */
-            }}
-            li {{
-                margin: 20px auto; /* Centre les articles */
-                padding: 15px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                max-width: 800px; /* Largeur maximale pour centrer */
-                text-align: justify;
-                color: white; /* Texte en blanc pour les articles */
-                background-color: rgba(255, 255, 255, 0.8); /* Fond blanc avec transparence */
-            }}
-            strong {{
-                color: white; /* Le texte fort en blanc */
-            }}
-        </style>
-    </head>
-    <body>
-        <h1>📰 Newsletter<br>
-        <em style="font-size: 0.6em;">{st.session_state.retrieval_time_format1}</em></h1>
-    """
-
-    # Couleurs associées aux catégories (version plus sombre)
-    category_colors = {
-        "Politique": "#6A98D9",       # Bleu sombre
-        "Technologie": "#8A8D90",     # Gris sombre
-        "International": "#DFAF5D",   # Orange sombre     
-        "Économie": "#77C4DB",        # Cyan sombre
-        "Culture": "#A478C4",         # Violet sombre
-        "Environnement": "#6ABBA5",   # Vert sombre
-        "Santé": "#4CB8B1",           # Vert menthe sombre
-        "Sport": "#E49A9E",           # Rouge sombre
-        "Justice": "#E6C94A",         # Jaune sombre
-        "Faits divers": "#E17677",    # Rouge clair sombre
-        "Société": "#BFA0C5",         # Violet doux sombre
-        "Divers": "#545B5D",          # Gris sombre
-        "Autres actus": "#000000"
-    }
-
-    # Ordre de priorité des catégories par importance
-    priority_order = [
-        "Politique",
-        "Économie",
-        "Technologie",
-        "Environnement",
-        "Santé",
-        "International",
-        "Justice",
-        "Société",
-        "Culture",
-        "Sport",
-        "Faits divers",
-        "Autres actus"
-    ]
-
-    # Filtrer les catégories selon l'ordre de priorité défini et ne garder que celles qui contiennent des articles
-    ordered_categories = [category for category in priority_order if category in grouped_articles_by_topics and grouped_articles_by_topics[category]]
-
-
-    # Ajouter chaque catégorie et ses articles à la newsletter
-    for category in ordered_categories:
-        articles = grouped_articles_by_topics[category]
-
-        # Obtenir la couleur de fond et du texte pour la catégorie
-        article_background_color = category_colors.get(category, "#808080")
-        category_text_color = category_colors.get(category, "#000000")  # Texte en noir si non défini
-
-        # Ajouter le titre de la catégorie avec sa couleur
-        html_content += f"<h2 class='category-title' style='color: {category_text_color};'>{category}</h2><ul>"
-
-        # Ajouter chaque article de la catégorie
-        for article in articles:
-            if article.title != "":
-                html_content += f"""
-                <li style='background-color: rgba({hex_to_rgba(category_colors[category], 0.85)});'>
-                    <strong><em>{article.title_propre}</em></strong><br><br>
-                    {article.summary}
-                </li>
-                """
-
-        html_content += "</ul>"
-
-    html_content += """
-        </body>
-    </html>
-    """
-
-    st.session_state.newsletter=html_content
-    chemin="Tests_newsletter/24hActus_Newsletter_"+st.session_state.retrieval_time_format3+".html"
-    # Enregistrer la newsletter dans un fichier HTML
-    with open(chemin, "w", encoding="utf-8") as file:
-        file.write(html_content)
-    return html_content
+from fonctions.newsletter_generator import generate_html_content
 
 col1, col2 = st.columns(2)
 
 with col1:
 # Générer et afficher la newsletter
     if st.button("Générer la newsletter"):
+
         # Générer le contenu HTML de la newsletter
-        html_content_generation = generate_html_content(st.session_state.grouped_articles_by_topics)
+        html_content_generation = generate_html_content(st.session_state.grouped_articles_by_topics, st.session_state.retrieval_time_format1, st.session_state.retrieval_time_format3)
+        st.session_state.newsletter=html_content_generation
 
 # Bouton de téléchargement de la newsletter
 if 'newsletter' in st.session_state:
     st.sidebar.download_button(
         label="Télécharger la Newsletter du jour",
-        data=    st.session_state.newsletter,
+        data=st.session_state.newsletter,
         file_name="Newsletter_du_" + st.session_state.retrieval_time_format3 + ".html", 
         mime="text/html"
     )
@@ -753,229 +598,21 @@ if 'newsletter' in st.session_state:
 #########APPLICATION###############
 #########PODCAST Actu##############
 ###################################
-import os
-from pydub import AudioSegment
-from pydub.effects import speedup
-from scipy.signal import resample
-
-# Créer un dossier pour stocker les fichiers audio individuels
-def create_speech_directory():
-    if not os.path.exists("speech"):
-        os.makedirs("speech")
-
-# Génère le script du podcast avec les différents intervenants
-def generate_podcast_script(articles_by_category):
-    podcast_script = []
-
-    # Introduction
-    podcast_script.append({
-        "voice": "masculine", 
-        "text": f"""
-        Salut, et bienvenue dans ton podcast 24 heures Actu présentant les actualités des dernières 24 heures à partir du {st.session_state.retrieval_time_format2} !
-        """
-    })
-    
-    podcast_script.append({
-        "voice": "feminine", 
-        "text": """
-        Installes toi confortablement et prépare toi à tout connaitre des infos récentes du moment !
-        """
-    })
-    
-    # Ordre de priorité des catégories par importance
-    priority_order = [
-        "Politique",
-        "Économie",
-        "Technologie",
-        "Environnement",
-        "Santé",
-        "International",
-        "Justice",
-        "Société",
-        "Culture",
-        "Sport",
-        "Faits divers",
-        "Autres actus"
-    ]
-
-    # Filtrer les catégories selon l'ordre de priorité défini et ne garder que celles qui contiennent des articles
-    ordered_categories = [category for category in priority_order if category in articles_by_category and articles_by_category[category]]
-
-
-    # Alterner entre les catégories et les articles
-    alternating_voice = "masculine"  # Commencer par la voix masculine
-
-    for category in ordered_categories:
-        if category!="Autres actus":
-            # Présenter chaque catégorie
-            if alternating_voice == "masculine":
-                podcast_script.append({
-                    "voice": "masculine",
-                    "text": f"Allons-y, parlons des actus {category} !"
-                })
-                alternating_voice = "feminine"
-            else:
-                podcast_script.append({
-                    "voice": "feminine",
-                    "text": f"Maintenant, découvrons ensemble ce qui se passe dans les actus {category} !"
-                })
-                alternating_voice = "masculine"
-
-            # Ajouter les articles
-            for article in articles_by_category[category]:
-                if alternating_voice == "masculine":
-                    podcast_script.append({
-                        "voice": "masculine",
-                        "text": f"{article.title_propre}. {article.summary}"
-                    })
-                    alternating_voice = "feminine"
-                else:
-                    podcast_script.append({
-                        "voice": "feminine",
-                        "text": f"{article.title_propre}. {article.summary}"
-                    })
-                    alternating_voice = "masculine"
-
-    # Conclusion
-    podcast_script.append({
-        "voice": "feminine",
-        "text": """
-        Et voilà, c'est la fin de notre épisode sur les actus des dernières 24 heures.
-        Merci à toi d'avoir écouter cette épisode, retrouves ces actualités dans un formats newsletter sur notre site
-        """
-    })
-
-    podcast_script.append({
-        "voice": "masculine",
-        "text": """
-        N'oublies pas de revenir demain pour encore plus d'actu.
-        Prends soin de toi et à demain !
-        """
-    })
-    
-    return podcast_script
-
-# Requete à l'API OpenAI pour les voix
-def text_to_mp3_Openai(text, voice, output_path="audio.mp3"):
-    # Utilisation de l'API OpenAI pour la synthèse vocale
-    client = st.session_state.client
-    response = client.audio.speech.create(
-        model="tts-1",
-        voice=voice,  # Voix dynamique basée sur le sexe
-        input=text,
-    )
-    response.stream_to_file(output_path)
-    return output_path
-
-# Fonction pour générer le podcast entier
-def generate_podcast_audio_files(podcast_script):
-    create_speech_directory()  # Créer le dossier speech s'il n'existe pas
-    
-    for i, segment in enumerate(podcast_script):
-        voice_type = "echo" if segment["voice"] == "masculine" else "shimmer"  # Sélectionner la voix
-        output_path = f"speech/segment_{i+1}.mp3"  # Sauvegarde de chaque segment
-
-        # Générer chaque segment audio à partir du texte (via OpenAI ou un autre service)
-        text_to_mp3_Openai(segment["text"], voice_type, output_path)
-    
-    return "Tous les fichiers audio ont été générés."
-
-# Modification des voix
-def change_voice_pitch(audio_segment, semitone_change):
-    # Convertir le fichier AudioSegment en numpy array
-    samples = np.array(audio_segment.get_array_of_samples())
-    
-    # Taux d'échantillonnage
-    sample_rate = audio_segment.frame_rate
-    
-    # Calculer le facteur de changement de fréquence
-    pitch_factor = 2 ** (semitone_change / 12.0)
-    
-    # Modifier le pitch en changeant la fréquence d'échantillonnage
-    new_sample_rate = int(sample_rate * pitch_factor)
-    
-    # Resampling pour changer le pitch
-    shifted_samples = resample(samples, int(len(samples) * (new_sample_rate / sample_rate)))
-    
-    # Convertir les samples retournés en AudioSegment
-    return audio_segment._spawn(shifted_samples.astype(audio_segment.array_type).tobytes())
-
-#Ajoutes les effets 
-def generate_podcast_audio_with_music(podcast_script, background_music_path):
-    # Créer le dossier speech s'il n'existe pas
-    create_speech_directory()
-
-    combined_audio = AudioSegment.silent(duration=500)  # 1 seconde de silence au début
-    
-    # Charger la musique de fond
-    background_music = AudioSegment.from_file(background_music_path)
-    
-    # Variables pour ajuster les voix et la musique
-    voice_volume = +10  # Augmenter un peu le volume de la voix
-    music_volume = -10  # Baisser le volume de la musique de fond pour ne pas dominer la voix
-    intro_duration = 15000  # Durée de la musique d'intro en millisecondes (15 secondes)
-    outro_duration = 15000  # Durée de la musique d'outro en millisecondes (15 secondes)
-
-    for i, segment in enumerate(podcast_script):
-        voice_type = "echo" if segment["voice"] == "masculine" else "shimmer"  # Sélectionner la voix
-        output_path = f"speech/segment_{i+1}.mp3"  # Chemin du fichier MP3
-
-        # Charger le segment audio généré
-        voice_audio = AudioSegment.from_mp3(output_path)
-        voice_audio = voice_audio + voice_volume  # Ajuster le volume de la voix
-        
-        # Ajuster la hauteur de la voix
-        # if voice_type == "echo":  # Voix masculine
-        #     voice_audio = change_voice_pitch(voice_audio, semitone_change=-0.5)  # Plus grave
-        # elif voice_type == "shimmer":  # Voix féminine
-        #     voice_audio = change_voice_pitch(voice_audio, semitone_change=0.5)  # Plus aiguë
-
-        # Accélérer la voix de 1.25x
-        voice_audio = speedup(voice_audio, playback_speed=1.25)
-
-        # Ajouter musique à l'introduction
-        if i == 0:
-            background_music_intro = background_music[:intro_duration].fade_in(2000).fade_out(2000) + music_volume
-            combined_segment = background_music_intro.overlay(voice_audio)
-        # Ajouter musique à la conclusion dans les 15 dernières secondes
-        elif i == len(podcast_script) - 2:
-            # Avant-dernière voix: commence la musique de fond ici
-            outro_length = len(voice_audio)  # Longueur de l'avant-dernière voix
-            background_music_outro = background_music[:outro_length].fade_in(outro_length) + music_volume  # Prend la musique jusqu'à la longueur de la voix
-            combined_segment = voice_audio.overlay(background_music_outro)
-
-        elif i == len(podcast_script) - 1:
-            # Dernière voix: reprendre la musique après la voix
-            outro_voice_part = voice_audio  # Prendre la voix entière
-
-            # Reprendre la musique où elle s'est arrêtée dans l'avant-dernière voix
-            start_position = len(st.session_state.podcast_script[-2])  # Longueur de l'avant-dernière voix pour savoir où reprendre la musique
-            background_music_resume = background_music[9800:23000].fade_out(3000) + music_volume
-
-            # Combiner la dernière voix avec la musique de fond
-            combined_segment = background_music_resume.overlay(outro_voice_part)
-
-        else:
-            # Pas de musique pour les segments intermédiaires
-            combined_segment = voice_audio
-                
-        # Ajouter le segment combiné à l'audio final
-        combined_audio += combined_segment
-
-    # Chemin du fichier de sortie pour l'audio combiné
-    combined_output_path = "speech/24hActus_podcast_"+st.session_state.retrieval_time_format3+".mp3"
-    
-    # Exporter l'audio combiné en un seul fichier MP3
-    combined_audio.export(combined_output_path, format="mp3")
-    
-    return combined_output_path
+from fonctions.podcast_generator import generate_podcast_script, generate_podcast_audio_files, generate_podcast_audio_with_music, generate_final_video
+from fonctions.upload_youtube import upload_video
 
 with col2:
     # Générer le script du podcast
     if st.button("Générer le podcast"):
-         # Générer le podcast en prenant seulement les deux premières catégories
+        audio_file_path = "Production_audio_visuel/24hActus_podcast_"+st.session_state.retrieval_time_format3+".mp3"
+        image_path = 'miniature.png'
+        output_video_path = "Production_audio_visuel/24hActus_Podcast" + st.session_state.retrieval_time_format3 + ".mp4"
+
+        # Générer le podcast en prenant seulement les deux premières catégories
         # limited_articles = dict(list(st.session_state.grouped_articles_by_topics.items())[:2])  # Prendre les deux premières catégories
-        podcast_script = generate_podcast_script(st.session_state.grouped_articles_by_topics)
+
+        # Générer le script du podcast
+        podcast_script = generate_podcast_script(st.session_state.grouped_articles_by_topics, st.session_state.retrieval_time_format3)
 
         # Créer un fichier .txt pour sauvegarder le script
         txt_file_path = "podcast_script.txt"
@@ -992,13 +629,25 @@ with col2:
 
         st.session_state.podcast_script=podcast_script
 
-        # Générer les fichiers audio individuels
-        # generate_podcast_audio_files(st.session_state.podcast_script)
+        # Générer les fichiers audio individuels Text to Speech
+        generate_podcast_audio_files(st.session_state.podcast_script)
 
-        # Ajouter la musique et les effets au podcast
+        # Ajout de la musique et des effets au podcast
         podcast_audio = generate_podcast_audio_with_music(podcast_script, "music.mp3")
         st.session_state.podcast_audio=podcast_audio
-        st.sidebar.audio(podcast_audio)
+        st.sidebar.audio(podcast_audio) #Affichage sur le streamlit
+
+        # Générer le fichier mp4 avec l'audio et la miniature
+        generate_final_video(audio_file_path, image_path, output_video_path)
+        
+        # Uploader la video sur Youtube
+        if st.sidebar.button("Upload sur Youtube"):
+            file_name="24hActus_Podcast" + st.session_state.retrieval_time_format3 + ".mp4"
+            description = f"""
+            Ici, on te présente les actus du {st.session_state.retrieval_time_format3}
+            N'hésites pas à nous faire un retour en commentaire
+            """
+            upload_video(file_path="podcast_video.mp4",title=file_name,description=description)
 
 if 'podcast_audio' in st.session_state:
     # Proposer le téléchargement du podcast
@@ -1013,113 +662,10 @@ if 'podcast_audio' in st.session_state:
 if 'podcast_script' in st.session_state:
     st.write(st.session_state.podcast_script)
 
-#################################################### Partage sur YOUTUBE
-
-# from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
-
-
-
-# # Exemple d'utilisation
-# audio_file_path = './speech/podcast.mp3'  # Chemin vers le fichier audio
-# image_path = './assets/thumbnail.jpg'  # Chemin vers une image à utiliser comme fond
-# output_video_path = './/podcast_video.mp4'  # Chemin pour le fichier vidéo final
-
-# generate_final_video(audio_file_path, image_path, output_video_path)
-
 ###################################
 #########APPLICATION###############
 #########Envoie Mail Actu##########
 ###################################
-# import re
-
-# def is_valid_email(email):
-#     # Utilisation d'une regex pour vérifier si l'email est au bon format
-#     regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-#     return re.match(regex, email) is not None
-
-# import os.path
-# import base64
-# from email.message import EmailMessage
-# import google.auth
-# from googleapiclient.discovery import build
-# from googleapiclient.errors import HttpError
-# from google.oauth2.credentials import Credentials
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from google.auth.transport.requests import Request
-
-# # Si vous modifiez ces portées, supprimez le fichier token.json
-# SCOPES = ['https://www.googleapis.com/auth/gmail.compose']
-
-# def gmail_authenticate():
-#     """Authentification OAuth2 pour Gmail API."""
-#     creds = None
-#     # Le fichier token.json stocke les tokens d'accès et de rafraîchissement de l'utilisateur
-#     if os.path.exists('token.json'):
-#         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-#     # Si il n'y a pas de token valide, il faut s'authentifier
-#     if not creds or not creds.valid:
-#         if creds and creds.expired and creds.refresh_token:
-#             creds.refresh(Request())
-#         else:
-#             flow = InstalledAppFlow.from_client_secrets_file(
-#                 'credentials.json', SCOPES)
-#             creds = flow.run_local_server(port=0)
-#         # Sauvegarder le token pour la prochaine exécution
-#         with open('token.json', 'w') as token:
-#             token.write(creds.to_json())
-#     return creds
-
-# def gmail_create_draft(sender_email, recipient_email, subject, newsletter_content):
-#     """Créer un brouillon dans Gmail."""
-#     creds = gmail_authenticate()
-
-#     try:
-#         # Créer le client Gmail API
-#         service = build("gmail", "v1", credentials=creds)
-
-#         message = EmailMessage()
-
-#         # Contenu du mail
-#         message.set_content(newsletter_content)
-
-#         message["To"] = recipient_email
-#         message["From"] = sender_email
-#         message["Subject"] = subject
-
-#         # Encoder le message au format base64
-#         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-#         create_message = {"message": {"raw": encoded_message}}
-
-#         # Créer le brouillon dans Gmail
-#         draft = (
-#             service.users()
-#             .drafts()
-#             .create(userId="me", body=create_message)
-#             .execute()
-#         )
-
-#         # print(f'Draft created with id: {draft["id"]}\nDraft message: {draft["message"]}')
-#         return draft
-
-#     except HttpError as error:
-#         print(f"An error occurred: {error}")
-#         return None
-
-# recipient_email = st.text_input("Entrez l'adresse e-mail pour recevoir la newsletter :")
-
-# Définir les informations du mail
-# sender_email = "joris.entrepro@gmail.com"
-# recipient_email = recipient_email
-# subject = "Votre Newsletter"
-# newsletter_content = """
-# Bonjour,
-
-# Voici les dernières actualités de notre newsletter !
-
-# Cordialement,
-# L'équipe.
-# """
 
 # if st.button("Envoyer la newsletter"):
 #     if recipient_email:

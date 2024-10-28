@@ -1,3 +1,7 @@
 env/
 .streamlit/
 faiss_index/
+client_secrets.json
+debug.log
+podcast_video.mp4
+youtube-v3-api-captions.json
