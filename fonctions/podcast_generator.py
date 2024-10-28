@@ -4,6 +4,7 @@ import numpy as np
 from pydub import AudioSegment
 from pydub.effects import speedup
 from openai import OpenAI
+import openai
 from scipy.signal import resample
 from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip
 from fonctions.upload_youtube import upload_video
